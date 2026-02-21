@@ -88,17 +88,44 @@ Worker 执行任务的全部信息，无需回来问问题。
 - 完全无关的 ticket → 无 --after（并行执行）
 - 原则：最小化依赖，最大化并行
 
+### Step 3.5: 插入验证 Checkpoint
+
+每个功能模块的开发 ticket 完成后，插入一个 **验证 checkpoint ticket**：
+
+**规则：**
+- 每组相关开发 ticket 后面跟一个 checkpoint ticket
+- Checkpoint 用 `--after` 依赖该组所有开发 ticket
+- 后续模块的 ticket 应 `--after` checkpoint（而非直接依赖开发 ticket）
+- Checkpoint 确保集成后代码能编译、测试通过、lint 干净
+
+**Checkpoint ticket 的写法：**
+- title: "Verify [模块名] integration"
+- context: 列出前序 ticket 做了什么，项目技术栈
+- criteria: "cargo build succeeds, cargo test passes, cargo clippy has no warnings" (或对应的 npm/python 命令)
+- prompt: "验证前序任务的集成结果。依次运行 build、test、lint。如果有错误，分析原因并修复。所有检查通过后报告完成。"
+
+**示例 DAG：**
+```
+T1: DB schema          (独立)
+T2: DB tests           (--after 1)
+T3: Checkpoint         (--after 1,2)  ← 验证 DB 模块
+T4: API routes         (--after 3)    ← 依赖 checkpoint 而非 T1/T2
+T5: API tests          (--after 4)
+T6: Checkpoint         (--after 4,5)  ← 验证 API 模块
+```
+
 ### Step 4: 分配 worker
 - 用 `legion-status` 查看当前 worker 状态
 - 无依赖的 ticket 分配给不同 worker（并行）
 - Worker 完成任务后会自动接新任务，无需等待
 
 ### Step 5: 批量 dispatch
-列出所有 dispatch 命令，确认后逐个执行：
+列出所有 dispatch 命令（含 checkpoint），确认后逐个执行：
 ```
-legion-dispatch 1 -t "..." -c "..." -k "..." --plan "Files: src/db/schema.rs (new). Base data layer." "..."
-legion-dispatch 2 -t "..." -c "..." -k "..." --after 1 --plan "Files: src/api/routes.rs (new). Depends on schema from ticket 1: use crate::db::Schema." "..."
-legion-dispatch 3 -t "..." -c "..." -k "..." --after 1,2 --plan "Files: src/ui/app.rs (modify). Uses API from ticket 2 and types from ticket 1." "..."
+legion-dispatch 1 -t "Implement DB schema" -c "..." -k "..." --plan "Files: src/db/schema.rs (new). Base data layer." "..."
+legion-dispatch 2 -t "Add DB unit tests" -c "..." -k "..." --after 1 --plan "Files: tests/db_test.rs (new). Tests for schema from ticket 1." "..."
+legion-dispatch 3 -t "Verify DB module integration" -c "Tickets 1-2 implemented DB schema and tests. Tech: Rust with Cargo." -k "cargo build succeeds, cargo test passes, cargo clippy has no warnings" --after 1,2 "验证前序任务的集成结果。依次运行: 1) cargo build 2) cargo test 3) cargo clippy -- -D warnings。如果有错误，分析原因并修复。所有检查通过后报告完成。"
+legion-dispatch 4 -t "Implement API routes" -c "..." -k "..." --after 3 --plan "Files: src/api/routes.rs (new). Uses DB schema from ticket 1." "..."
 ```
 
 ## 分解原则
@@ -108,3 +135,4 @@ legion-dispatch 3 -t "..." -c "..." -k "..." --after 1,2 --plan "Files: src/ui/a
 3. **最小依赖**：能并行就并行，只在必要时用 --after
 4. **Context 要充分**：宁多勿少，Worker 看不到你的上下文
 5. **Criteria 要可测**：每条标准必须能用命令验证
+6. **模块间设 Checkpoint**：每个功能模块后插入验证 ticket，后续模块依赖 checkpoint 而非开发 ticket
