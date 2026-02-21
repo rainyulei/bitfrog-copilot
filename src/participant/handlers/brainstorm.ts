@@ -17,12 +17,21 @@ Rules:
 Your goal is to guide the user through exploring their idea and arriving at a concrete design approach.`;
 
 /**
+ * A numbered option extracted from LM response
+ */
+interface OptionItem {
+  number: number;
+  title: string;
+}
+
+/**
  * Internal context for brainstorm session
  */
 interface BrainstormContext extends Record<string, unknown> {
   topic?: string;
   answers: Array<{ question: string; answer: string }>;
   phase: 'exploring' | 'proposing' | 'refining' | 'complete';
+  options?: OptionItem[];
 }
 
 /**
@@ -37,6 +46,33 @@ function isBrainstormContext(context: Record<string, unknown>): context is Brain
     'phase' in context &&
     typeof context.phase === 'string'
   );
+}
+
+/**
+ * Parse numbered options from LM response text.
+ * Matches patterns like "1. Title", "1) Title", "**1. Title**", "1. **Title**"
+ */
+function parseNumberedOptions(text: string): OptionItem[] {
+  const options: OptionItem[] = [];
+  const lines = text.split('\n');
+
+  for (const line of lines) {
+    // Match: "1. Some title" or "1) Some title" or "**1. Title**" or "1. **Title**: description"
+    const match = line.match(/^\s*\**(\d+)[.)]\s*\**\s*(.+)/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      let title = match[2].trim();
+      // Clean markdown bold markers and trailing **
+      title = title.replace(/\*\*/g, '').trim();
+      // Take only the first sentence or up to colon/dash as the label
+      const shortTitle = title.split(/[:\-—]/)[0].trim();
+      if (shortTitle.length > 0 && num <= 5) {
+        options.push({ number: num, title: shortTitle.length > 60 ? shortTitle.slice(0, 57) + '...' : shortTitle });
+      }
+    }
+  }
+
+  return options;
 }
 
 /**
@@ -129,6 +165,9 @@ export class BrainstormHandler implements SubHandler {
     // Detect DESIGN_COMPLETE signal
     const isComplete = fullText.includes('DESIGN_COMPLETE');
 
+    // Extract numbered options from response (e.g., "1. Use React Context" or "1) React Context")
+    const options = parseNumberedOptions(fullText);
+
     // Extract the question from the response (last line that ends with '?')
     const lines = fullText.split('\n').filter(l => l.trim());
     let currentQuestion = '';
@@ -160,6 +199,8 @@ export class BrainstormHandler implements SubHandler {
     let phase: BrainstormContext['phase'];
     if (isComplete) {
       phase = 'complete';
+    } else if (options.length >= 2) {
+      phase = 'proposing';
     } else if (step > 3) {
       phase = 'refining';
     } else if (step > 2) {
@@ -172,7 +213,8 @@ export class BrainstormHandler implements SubHandler {
     const newContext: BrainstormContext = {
       topic,
       answers,
-      phase
+      phase,
+      options: options.length >= 2 ? options : prevContext.options
     };
 
     // Build history
@@ -220,25 +262,44 @@ export class BrainstormHandler implements SubHandler {
     if (phase === 'complete') {
       return [
         {
-          prompt: '/plan Create implementation plan',
-          label: 'Create Implementation Plan',
+          prompt: '/plan Create implementation plan based on the design above',
+          label: '📋 Create Implementation Plan',
           command: 'plan'
         },
         {
-          prompt: 'I want to revise the design',
-          label: 'Revise Design'
+          prompt: 'I want to revise the design, let\'s explore more options',
+          label: '🔄 Revise Design'
         }
       ];
     }
 
-    // Proposing or refining phase: offer numbered options
+    // Proposing or refining phase: offer options extracted from LM response
     if (phase === 'proposing' || phase === 'refining' || step > 2) {
-      return [
-        { prompt: 'Option 1', label: 'Option 1' },
-        { prompt: 'Option 2', label: 'Option 2' },
-        { prompt: 'Option 3', label: 'Option 3' },
-        { prompt: 'I have a different idea', label: 'Other' }
-      ];
+      const options = contextRaw.options;
+      const followups: vscode.ChatFollowup[] = [];
+
+      if (options && options.length > 0) {
+        for (const opt of options) {
+          followups.push({
+            prompt: `I choose option ${opt.number}: ${opt.title}`,
+            label: `${opt.number}. ${opt.title}`
+          });
+        }
+      } else {
+        // Fallback if no options were parsed
+        followups.push(
+          { prompt: 'I like the first approach', label: '1️⃣ First approach' },
+          { prompt: 'I like the second approach', label: '2️⃣ Second approach' },
+          { prompt: 'I like the third approach', label: '3️⃣ Third approach' }
+        );
+      }
+
+      followups.push({
+        prompt: 'None of these - I have a different idea',
+        label: '💡 Different idea'
+      });
+
+      return followups;
     }
 
     // Exploring phase: no followups

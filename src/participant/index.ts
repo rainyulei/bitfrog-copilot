@@ -95,12 +95,12 @@ function followupProvider(
     return [
       {
         prompt: '/brainstorm Explore ideas and design',
-        label: 'Brainstorm & Design',
+        label: '💡 Brainstorm & Design',
         command: 'brainstorm'
       },
       {
         prompt: '/plan Create implementation plan',
-        label: 'Implementation Plan',
+        label: '📋 Implementation Plan',
         command: 'plan'
       }
     ];

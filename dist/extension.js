@@ -38,7 +38,7 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
-const participant_1 = require("./participant");
+const options_1 = require("./tools/options");
 const AGENTS_DIR = 'agents';
 const SETTING_KEY = 'chat.agentFilesLocations';
 const GLOBAL_AGENTS_DIR = '~/.superpower-copilot/agents';
@@ -69,9 +69,9 @@ function activate(context) {
         }
         // 3. Force-register the path in settings (always write, don't skip)
         forceRegisterAgentsPath();
+        // 4. Register language model tools
+        context.subscriptions.push(vscode.lm.registerTool('superpower-copilot_options', new options_1.OptionsTool()));
         vscode.window.showInformationMessage(`Superpower Copilot: ${agentFiles.length} agents activated.`);
-        // Register chat participant
-        (0, participant_1.registerParticipant)(context);
     }
     catch (err) {
         vscode.window.showErrorMessage(`Superpower Copilot: Failed to register agents — ${err}`);

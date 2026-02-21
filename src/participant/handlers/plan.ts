@@ -76,19 +76,18 @@ export class PlanHandler implements SubHandler {
     _context: vscode.ChatContext,
     _token: vscode.CancellationToken
   ): vscode.ChatFollowup[] {
-    // Always return the same 3 options for plan review
     return [
       {
-        prompt: 'Looks good, save this plan',
-        label: 'Approve Plan'
+        prompt: 'Looks good, let\'s start executing this plan',
+        label: '✅ Approve & Execute'
       },
       {
-        prompt: 'Adjust the plan',
-        label: 'Adjust'
+        prompt: 'Adjust the plan - some tasks need changes',
+        label: '✏️ Adjust Plan'
       },
       {
-        prompt: 'Add more detail to the tasks',
-        label: 'More Detail'
+        prompt: 'Add more detail and break down the tasks further',
+        label: '🔍 More Detail'
       }
     ];
   }

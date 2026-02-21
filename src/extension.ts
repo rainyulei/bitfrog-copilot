@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { registerParticipant } from './participant';
+import { OptionsTool } from './tools/options';
 
 const AGENTS_DIR = 'agents';
 const SETTING_KEY = 'chat.agentFilesLocations';
@@ -36,12 +36,15 @@ export function activate(context: vscode.ExtensionContext) {
     // 3. Force-register the path in settings (always write, don't skip)
     forceRegisterAgentsPath();
 
+    // 4. Register language model tools
+    context.subscriptions.push(
+      vscode.lm.registerTool('superpower-copilot_options', new OptionsTool())
+    );
+
     vscode.window.showInformationMessage(
       `Superpower Copilot: ${agentFiles.length} agents activated.`
     );
 
-    // Register chat participant
-    registerParticipant(context);
   } catch (err) {
     vscode.window.showErrorMessage(
       `Superpower Copilot: Failed to register agents — ${err}`
