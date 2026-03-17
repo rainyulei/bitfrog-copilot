@@ -13,7 +13,7 @@
     "vscode": "^1.110.0"
   },
   "categories": ["AI", "Chat"],
-  "icon": "icon.svg",
+  "icon": "icon.png",
   "keywords": ["copilot", "agent", "bitfrog", "tdd", "code-review", "debugging", "workflow", "brainstorm", "chinese-philosophy"],
   "main": "./dist/extension.js",
   "activationEvents": ["onStartupFinished"],
