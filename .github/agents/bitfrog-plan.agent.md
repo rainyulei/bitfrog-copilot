@@ -4,7 +4,7 @@ description: >
   Map dependencies, analyze impact, and create bite-sized implementation plans.
   First maps the codebase context, then breaks the design into executable TDD tasks.
   Keywords: plan, implement, task, break, decompose, dependency, context, map, sequence, step
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'runInTerminal', 'terminalLastCommand', 'getTerminalOutput']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'runInTerminal', 'terminalLastCommand', 'getTerminalOutput', 'vscode/askQuestions']
 handoffs:
   - label: "开始执行 (Start Execution)"
     agent: bitfrog-execute

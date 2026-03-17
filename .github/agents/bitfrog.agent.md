@@ -4,7 +4,7 @@ description: >
   BitFrog main router. Classifies user intent and routes to the appropriate
   specialized agent via handoffs. Use this as your default entry point.
   Keywords: help, start, what, how, build, fix, review, learn, design
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'vscode/askQuestions']
 handoffs:
   - label: "探索设计 (Brainstorm)"
     agent: bitfrog-brainstorm
