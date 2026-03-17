@@ -4,7 +4,7 @@ description: >
   Guided learning through hints and questions, not direct answers.
   Transparent learning path: shows what you're learning, progress, and next steps.
   Keywords: mentor, teach, learn, guide, explain, understand, hint, grow, help me understand, how does
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'fetch', 'githubRepo']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'fetch', 'githubRepo', 'vscode/askQuestions']
 ---
 
 # BitFrog Mentor — 学习引导

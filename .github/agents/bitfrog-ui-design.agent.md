@@ -4,7 +4,7 @@ description: >
   UX/UI design research: Jobs-to-be-Done analysis, user journey mapping,
   flow specs, and accessibility requirements. Understand users before designing.
   Keywords: ui, ux, design, user, journey, persona, flow, wireframe, accessibility, interface, layout
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'fetch', 'githubRepo', 'playwright/*']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'fetch', 'githubRepo', 'playwright/*', 'vscode/askQuestions']
 handoffs:
   - label: "创建实现计划 (Create Plan)"
     agent: bitfrog-plan

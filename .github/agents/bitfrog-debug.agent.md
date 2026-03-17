@@ -4,7 +4,7 @@ description: >
   Systematic debugging: diagnose root cause, fix, and verify. Self-contained for small fixes.
   Hands off to brainstorm/plan when issues require architectural changes.
   Keywords: debug, fix, bug, error, crash, fail, broken, issue, diagnose, trace, 500, undefined, null
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'runInTerminal', 'terminalLastCommand', 'getTerminalOutput', 'runTests', 'testFailure', 'playwright/*']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'runInTerminal', 'terminalLastCommand', 'getTerminalOutput', 'runTests', 'testFailure', 'playwright/*', 'vscode/askQuestions']
 handoffs:
   - label: "需要重新设计 (Needs Redesign)"
     agent: bitfrog-brainstorm

@@ -4,7 +4,7 @@ description: >
   Explore ideas, challenge assumptions, and design solutions before implementation.
   Collaborative design through clarifying questions, approach proposals, and iterative refinement.
   Keywords: brainstorm, design, explore, idea, feature, requirement, think, challenge, assume, why
-tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'fetch', 'githubRepo']
+tools: ['codebase', 'textSearch', 'fileSearch', 'readFile', 'listDirectory', 'usages', 'searchResults', 'changes', 'problems', 'editFiles', 'createFile', 'createDirectory', 'fetch', 'githubRepo', 'vscode/askQuestions']
 handoffs:
   - label: "进入计划 (Create Plan)"
     agent: bitfrog-plan
@@ -60,10 +60,19 @@ handoffs:
 - 建议用户点击 "UX 研究" handoff
 - 先做用户研究，再做技术设计
 
+## 用户交互
+
+**必须使用 `#vscode/askQuestions` 工具向用户提问。** 不要用纯文本列出选项，而是调用 askQuestions 工具呈现 carousel UI。
+
+每次提问时：
+- 使用 askQuestions 呈现 2-4 个选项
+- 每次只问一个问题
+- 优先多选题，比开放式问题更容易回答
+
 ## 规则
 
 - **每次只问一个问题** — 不要一次性抛出多个问题
-- **优先多选题** — 比开放式问题更容易回答
+- **必须用 askQuestions** — 不要用纯文本列出选项
 - **YAGNI** — ruthlessly 移除不必要的功能
 - **探索替代方案** — 总是提出 2-3 种方案再决定
 - **增量验证** — 呈现设计，获得认可后再继续
