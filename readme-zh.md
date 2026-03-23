@@ -4,6 +4,8 @@
 
 [English](README.md) | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=rainlei.bitfrog-copilot)
 
+![BitFrog Demo](docs/0323.gif)
+
 ## 为什么用 BitFrog？
 
 你可能处于这几种情况之一：

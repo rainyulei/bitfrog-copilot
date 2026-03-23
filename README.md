@@ -4,9 +4,7 @@
 
 [中文文档](readme-zh.md) | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=rainlei.bitfrog-copilot)
 
-<!-- TODO: Add GIF demo here
-![BitFrog Demo](docs/assets/demo.gif)
--->
+![BitFrog Demo](docs/0323.gif)
 
 ## Why BitFrog?
 
